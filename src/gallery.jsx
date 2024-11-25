@@ -7,7 +7,7 @@ const [error, setError]= useState(null); //like loading, error will be initially
 
 useEffect(()=>{
     document.title= "Tour Comparison App";
-    fetch ('https://course-api.com/react-tours-project') //fetching data from the API
+    fetch ('https://www.course-api.com/react-tours-project') //fetching data from the API
         .then ((response)=>{
             if (!response.ok){
                 throw new Error ('Error'); //error will be thrown if it can not get a response
@@ -34,6 +34,18 @@ if (error){
     //display error message if cant properly fetch message
     return <div> Error: {error}</div>;
 }
+const handleRemovetour = (id)=>{ //function that removes a tour from the list
+    setTours((prevTour)=> prevTour.filter((tour)=> tour.id !== id));
+};
+const handleToggle= (id)=>{ 
+    setTours((prevTours)=>
+    prevTours.map((tour)=>
+        tour.id===id
+    ?{...tour, showMore: !tour.showMore}
+    :tour
+)
+);
+};
 
 //display the list of tours
 return(
@@ -42,10 +54,11 @@ return(
         {tours.map((tour)=>(
             <div key= {tour.id}>
                 <h3> {tour.name}</h3>
-                <p> {tour.price}</p>
-                <img src={tour.image} alt= {tour.name} width ="150"/>
-                <p>{tour.info}</p>
-                <button> Not interested</button>
+                <p> Price:${tour.price}</p>
+                <img src={tour.image} alt= {tour.name} width ="350"/>
+                <p>{tour.showMore? tour.info: `${tour.info.substring(0,100)}...`}</p>
+                <button onClick={()=> handleToggle(tour.id)}>{tour.showMore? 'Show Less': 'Read More'} </button>
+                <button onClick={()=> handleRemovetour(tour.id)}> Not interested</button>
             </div>
         ))}
     </div>
